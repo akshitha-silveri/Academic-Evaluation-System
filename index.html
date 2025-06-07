@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    :root {
+      --color-bg: #ffffff;
+      --color-text-primary: #111827;
+      --color-text-secondary: #6b7280;
+      --color-accent: #222222;
+      --color-shadow: rgba(0,0,0,0.05);
+      --color-card-bg: #f9fafb;
+      --radius: 0.75rem;
+      --spacing-xl: 4rem;
+      --spacing-lg: 2.5rem;
+      --spacing-md: 1.5rem;
+      --spacing-sm: 1rem;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --input-border: #d1d5db;
+      --input-focus-border: #2563eb; /* blue-600 */
+    }
+
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-lg) var(--spacing-sm);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--color-bg);
+      border-bottom: 1px solid #e5e7eb;
+      z-index: 100;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 4px var(--color-shadow);
+    }
+
+    header .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+      color: var(--color-accent);
+      user-select: none;
+    }
+
+    nav {
+      display: flex;
+      gap: var(--spacing-lg);
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius);
+      transition: color var(--transition), background var(--transition),
+        transform var(--transition);
+    }
+
+    nav button:hover,
+    nav button.active {
+      color: var(--color-accent);
+      background: #e0e7ff;
+      transform: scale(1.05);
+      outline: none;
+    }
+
+    nav button:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    main {
+      flex-grow: 1;
+    }
+
+    /* Headings */
+    h1 {
+      font-weight: 800;
+      font-size: 2.75rem;
+      margin-bottom: 0.25rem;
+      color: var(--color-accent);
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-accent);
+    }
+
+    p.subtitle {
+      color: var(--color-text-secondary);
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: var(--spacing-lg);
+      max-width: 600px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--color-card-bg);
+      box-shadow: 0 2px 8px var(--color-shadow);
+      border-radius: var(--radius);
+      padding: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      transition: box-shadow var(--transition);
+    }
+    .card:hover {
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Forms */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--color-text-primary);
+      margin-bottom: 0.25rem;
+      user-select: none;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+      appearance: none;
+      background: white;
+      border: 1.5px solid var(--input-border);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      color: var(--color-text-primary);
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--input-focus-border);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    button,
+    input[type="submit"] {
+      cursor: pointer;
+      background-color: #2563eb;
+      border: none;
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 1rem;
+      transition: background-color var(--transition), transform var(--transition);
+      align-self: flex-start;
+    }
+    button:hover,
+    input[type="submit"]:hover {
+      background-color: #1d4ed8;
+      transform: scale(1.05);
+    }
+    button:focus-visible,
+    input[type="submit"]:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    /* Table */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      max-width: 100%;
+      background: var(--color-card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 8px var(--color-shadow);
+    }
+
+    thead {
+      background-color: #e0e7ff;
+      color: var(--color-accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: left;
+      user-select: none;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #d1d5db;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: #f3f4f6;
+      cursor: default;
+      transition: background-color var(--transition);
+    }
+
+    .small-button {
+      background-color: transparent;
+      border: none;
+      color: var(--color-accent);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: color var(--transition), transform var(--transition);
+      border-radius: var(--radius);
+    }
+    .small-button:hover {
+      color: #1e40af;
+      transform: scale(1.2);
+    }
+    .small-button:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        gap: var(--spacing-md);
+      }
+      .container {
+        padding: var(--spacing-md);
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    /* Utility Classes */
+    .flex-center {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .text-muted {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .error-message {
+      color: #dc2626; /* red-600 */
+      font-size: 0.875rem;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" tabindex="0">StudentMS</div>
+    <nav role="navigation" aria-label="Main Navigation">
+      <button type="button" aria-controls="section-students" class="nav-btn active">Students</button>
+      <button type="button" aria-controls="section-attendance" class="nav-btn">Attendance</button>
+      <button type="button" aria-controls="section-results" class="nav-btn">Results</button>
+      <button type="button" aria-controls="section-fees" class="nav-btn">Fees</button>
+    </nav>
+  </header>
+  <main class="container" tabindex="0">
+    <section id="section-students" class="active-section" aria-labelledby="students-title" role="region">
+      <h1 id="students-title">Manage Students</h1>
+      <p class="subtitle">Add, edit, and view student personal details including name, roll number, password, and branch.</p>
+
+      <div class="card" aria-label="Add or edit student form">
+        <form id="student-form" novalidate autocomplete="off" aria-describedby="form-feedback" aria-live="polite">
+          <input type="hidden" id="student-id" />
+          <div>
+            <label for="student-name">Name</label>
+            <input type="text" id="student-name" name="name" required autocomplete="name" />
+            <span class="error-message" id="error-name" aria-live="assertive"></span>
+          </div>
+          <div>
+            <label for="student-roll">Roll Number</label>
+            <input type="text" id="student-roll" name="roll" required autocomplete="off" pattern="^[A-Za-z0-9\-]+$" title="Alphanumeric and dashes only" />
+            <span class="error-message" id="error-roll" aria-live="assertive"></span>
+          </div>
+          <div>
+            <label for="student-password">Password</label>
+            <input type="password" id="student-password" name="password" required autocomplete="new-password" />
+            <span class="error-message" id="error-password" aria-live="assertive"></span>
+          </div>
+          <div>
+            <label for="student-branch">Branch</label>
+            <select id="student-branch" name="branch" required>
+              <option value="" disabled selected>Select Branch</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Civil">Civil</option>
+              <option value="Electronics">Electronics</option>
+            </select>
+            <span class="error-message" id="error-branch" aria-live="assertive"></span>
+          </div>
+          <input type="submit" value="Add Student" aria-controls="students-table" />
+          <button type="button" id="cancel-edit" style="display:none;">Cancel Edit</button>
+        </form>
+      </div>
+
+      <div class="card" aria-label="Students list">
+        <h2>Students List</h2>
+        <table id="students-table" aria-describedby="students-table-desc" role="table">
+          <caption id="students-table-desc" class="sr-only">List of all students with options to edit or delete</caption>
+          <thead>
+            <tr>
+              <th scope="col">Roll Number</th>
+              <th scope="col">Name</th>
+              <th scope="col">Branch</th>
+              <th scope="col" style="width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows go here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-attendance" aria-labelledby="attendance-title" role="region" hidden>
+      <h1 id="attendance-title">Attendance Records</h1>
+      <p class="subtitle">Track and update attendance percentage for each student.</p>
+
+      <div class="card">
+        <table id="attendance-table" aria-describedby="attendance-desc" role="table">
+          <caption id="attendance-desc" class="sr-only">Attendance percentages for students with inline edit</caption>
+          <thead>
+            <tr>
+              <th scope="col">Roll Number</th>
+              <th scope="col">Name</th>
+              <th scope="col">Attendance (%)</th>
+              <th scope="col" style="width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows go here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-results" aria-labelledby="results-title" role="region" hidden>
+      <h1 id="results-title">Results</h1>
+      <p class="subtitle">View and update students' exam results in real-time.</p>
+
+      <div class="card">
+        <table id="results-table" aria-describedby="results-desc" role="table">
+          <caption id="results-desc" class="sr-only">Exam results for students with inline edit</caption>
+          <thead>
+            <tr>
+              <th scope="col">Roll Number</th>
+              <th scope="col">Name</th>
+              <th scope="col">Result (Grade)</th>
+              <th scope="col" style="width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows go here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-fees" aria-labelledby="fees-title" role="region" hidden>
+      <h1 id="fees-title">Fee Details</h1>
+      <p class="subtitle">Track fee payment status of students with real-time updates.</p>
+
+      <div class="card">
+        <table id="fees-table" aria-describedby="fees-desc" role="table">
+          <caption id="fees-desc" class="sr-only">Fee payment details for students with inline edit</caption>
+          <thead>
+            <tr>
+              <th scope="col">Roll Number</th>
+              <th scope="col">Name</th>
+              <th scope="col">Fee Paid (₹)</th>
+              <th scope="col">Total Fee (₹)</th>
+              <th scope="col">Balance (₹)</th>
+              <th scope="col" style="width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows go here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      // Data store key for localStorage
+      const STORAGE_KEY = 'studentMS_data';
+
+      // Initial default data structure
+      let data = {
+        students: [
+          // {id, name, roll, password, branch, attendancePercent, result, feePaid, totalFee}
+        ],
+      };
+
+      // Cache DOM elements
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const sections = {
+        students: document.getElementById('section-students'),
+        attendance: document.getElementById('section-attendance'),
+        results: document.getElementById('section-results'),
+        fees: document.getElementById('section-fees'),
+      };
+
+      // Students form inputs
+      const form = document.getElementById('student-form');
+      const inputId = document.getElementById('student-id');
+      const inputName = document.getElementById('student-name');
+      const inputRoll = document.getElementById('student-roll');
+      const inputPassword = document.getElementById('student-password');
+      const inputBranch = document.getElementById('student-branch');
+      const btnSubmit = form.querySelector('input[type="submit"]');
+      const btnCancelEdit = document.getElementById('cancel-edit');
+
+      // Error spans
+      const errorName = document.getElementById('error-name');
+      const errorRoll = document.getElementById('error-roll');
+      const errorPassword = document.getElementById('error-password');
+      const errorBranch = document.getElementById('error-branch');
+
+      // Tables bodies
+      const studentsTableBody = document.querySelector('#students-table tbody');
+      const attendanceTableBody = document.querySelector('#attendance-table tbody');
+      const resultsTableBody = document.querySelector('#results-table tbody');
+      const feesTableBody = document.querySelector('#fees-table tbody');
+
+      // ==== Utils ====
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function loadData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            data = JSON.parse(stored);
+          } catch {
+            data = { students: [] };
+          }
+        }
+      }
+
+      function generateId() {
+        return '_' + Math.random().toString(36).substr(2, 9);
+      }
+
+      function clearTable(tableBody) {
+        while (tableBody.firstChild) {
+          tableBody.removeChild(tableBody.firstChild);
+        }
+      }
+
+      function findStudentIndexById(id) {
+        return data.students.findIndex(s => s.id === id);
+      }
+
+      // ==== Navigation handling ====
+      navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          navButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          const target = button.getAttribute('aria-controls');
+          for (const key in sections) {
+            if (sections[key].id === target) {
+              sections[key].hidden = false;
+              sections[key].classList.add('active-section');
+              sections[key].setAttribute('tabindex', '0');
+              sections[key].focus();
+            } else {
+              sections[key].hidden = true;
+              sections[key].classList.remove('active-section');
+              sections[key].removeAttribute('tabindex');
+            }
+          }
+          renderAllTables();
+        });
+      });
+
+      // ==== Students Management ====
+
+      function validateForm() {
+        let valid = true;
+
+        errorName.textContent = '';
+        errorRoll.textContent = '';
+        errorPassword.textContent = '';
+        errorBranch.textContent = '';
+
+        if (!inputName.value.trim()) {
+          errorName.textContent = 'Name is required.';
+          valid = false;
+        }
+
+        if (!inputRoll.value.trim()) {
+          errorRoll.textContent = 'Roll number is required.';
+          valid = false;
+        } else if (!/^[A-Za-z0-9\-]+$/.test(inputRoll.value.trim())) {
+          errorRoll.textContent = 'Roll number can only contain letters, numbers, and dashes.';
+          valid = false;
+        } else {
+          // Check uniqueness (except if editing same id)
+          const currentId = inputId.value;
+          const existing = data.students.find(s => s.roll.toLowerCase() === inputRoll.value.trim().toLowerCase());
+          if (existing && existing.id !== currentId) {
+            errorRoll.textContent = 'Roll number must be unique.';
+            valid = false;
+          }
+        }
+
+        if (!inputPassword.value.trim()) {
+          errorPassword.textContent = 'Password is required.';
+          valid = false;
+        } else if (inputPassword.value.length < 6) {
+          errorPassword.textContent = 'Password must be at least 6 characters.';
+          valid = false;
+        }
+
+        if (!inputBranch.value) {
+          errorBranch.textContent = 'Please select a branch.';
+          valid = false;
+        }
+
+        return valid;
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        const idVal = inputId.value;
+        if (idVal) {
+          // Edit existing
+          const index = findStudentIndexById(idVal);
+          if (index !== -1) {
+            // update details (attendence,result,fee remain same)
+            data.students[index].name = inputName.value.trim();
+            data.students[index].roll = inputRoll.value.trim();
+            data.students[index].password = inputPassword.value;
+            data.students[index].branch = inputBranch.value;
+          }
+          btnSubmit.value = 'Add Student';
+          btnCancelEdit.style.display = 'none';
+          inputId.value = '';
+        } else {
+          // Add new
+          const newStudent = {
+            id: generateId(),
+            name: inputName.value.trim(),
+            roll: inputRoll.value.trim(),
+            password: inputPassword.value,
+            branch: inputBranch.value,
+            attendancePercent: 0,
+            result: 'N/A',
+            feePaid: 0,
+            totalFee: 100000,
+          };
+          data.students.push(newStudent);
+        }
+
+        saveData();
+        renderAllTables();
+        form.reset();
+      });
+
+      btnCancelEdit.addEventListener('click', () => {
+        form.reset();
+        inputId.value = '';
+        btnSubmit.value = 'Add Student';
+        btnCancelEdit.style.display = 'none';
+        clearErrors();
+      });
+
+      function clearErrors() {
+        errorName.textContent = '';
+        errorRoll.textContent = '';
+        errorPassword.textContent = '';
+        errorBranch.textContent = '';
+      }
+
+      // Populate student form for editing
+      function startEditStudent(id) {
+        const student = data.students.find(s => s.id === id);
+        if (student) {
+          inputId.value = student.id;
+          inputName.value = student.name;
+          inputRoll.value = student.roll;
+          inputPassword.value = student.password;
+          inputBranch.value = student.branch;
+          btnSubmit.value = 'Save Changes';
+          btnCancelEdit.style.display = 'inline-block';
+          clearErrors();
+          inputName.focus();
+          // Show students section and nav button active
+          navButtons.forEach(btn => btn.classList.remove('active'));
+          navButtons[0].classList.add('active');
+          for (const key in sections) {
+            sections[key].hidden = key !== 'students';
+          }
+        }
+      }
+
+      // Delete student
+      function deleteStudent(id) {
+        if (!confirm('Are you sure you want to delete this student?')) return;
+        const index = findStudentIndexById(id);
+        if (index !== -1) {
+          data.students.splice(index, 1);
+          saveData();
+          renderAllTables();
+        }
+      }
+
+      // ==== Render Functions ====
+      // Students Table
+      function renderStudentsTable() {
+        clearTable(studentsTableBody);
+        if (data.students.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 4;
+          td.textContent = 'No students added yet.';
+          td.style.fontStyle = 'italic';
+          td.className = 'text-muted';
+          tr.appendChild(td);
+          studentsTableBody.appendChild(tr);
+          return;
+        }
+        data.students.forEach(s => {
+          const tr = document.createElement('tr');
+
+          const tdRoll = document.createElement('td');
+          tdRoll.textContent = s.roll;
+          tr.appendChild(tdRoll);
+
+          const tdName = document.createElement('td');
+          tdName.textContent = s.name;
+          tr.appendChild(tdName);
+
+          const tdBranch = document.createElement('td');
+          tdBranch.textContent = s.branch;
+          tr.appendChild(tdBranch);
+
+          const tdActions = document.createElement('td');
+          const btnEdit = document.createElement('button');
+          btnEdit.className = 'small-button';
+          btnEdit.textContent = 'Edit';
+          btnEdit.setAttribute('aria-label', `Edit student ${s.name}`);
+          btnEdit.addEventListener('click', () => startEditStudent(s.id));
+
+          const btnDel = document.createElement('button');
+          btnDel.className = 'small-button';
+          btnDel.textContent = 'Delete';
+          btnDel.setAttribute('aria-label', `Delete student ${s.name}`);
+          btnDel.addEventListener('click', () => deleteStudent(s.id));
+
+          tdActions.appendChild(btnEdit);
+          tdActions.appendChild(btnDel);
+          tr.appendChild(tdActions);
+
+          studentsTableBody.appendChild(tr);
+        });
+      }
+
+      // Attendance Table
+      function renderAttendanceTable() {
+        clearTable(attendanceTableBody);
+        if (data.students.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 4;
+          td.textContent = 'No students added yet.';
+          td.style.fontStyle = 'italic';
+          td.className = 'text-muted';
+          tr.appendChild(td);
+          attendanceTableBody.appendChild(tr);
+          return;
+        }
+        data.students.forEach(s => {
+          const tr = document.createElement('tr');
+
+          const tdRoll = document.createElement('td');
+          tdRoll.textContent = s.roll;
+          tr.appendChild(tdRoll);
+
+          const tdName = document.createElement('td');
+          tdName.textContent = s.name;
+          tr.appendChild(tdName);
+
+          const tdAttendance = document.createElement('td');
+          tdAttendance.textContent = s.attendancePercent.toFixed(1);
+          tdAttendance.title = 'Click to edit attendance %';
+          tdAttendance.style.cursor = 'pointer';
+          tdAttendance.setAttribute('tabindex', '0');
+          tdAttendance.setAttribute('role', 'textbox');
+          tdAttendance.setAttribute('aria-label', `Attendance percentage for ${s.name}`);
+
+          // Inline edit attendance
+          tdAttendance.addEventListener('click', () => {
+            startInlineEditAttendance(tdAttendance, s.id);
+          });
+          tdAttendance.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              startInlineEditAttendance(tdAttendance, s.id);
+            }
+          });
+
+          tr.appendChild(tdAttendance);
+
+          const tdActions = document.createElement('td');
+          const btnReset = document.createElement('button');
+          btnReset.className = 'small-button';
+          btnReset.textContent = 'Reset';
+          btnReset.setAttribute('aria-label', `Reset attendance for ${s.name}`);
+          btnReset.addEventListener('click', () => {
+            s.attendancePercent = 0;
+            saveData();
+            renderAttendanceTable();
+          });
+          tdActions.appendChild(btnReset);
+          tr.appendChild(tdActions);
+
+          attendanceTableBody.appendChild(tr);
+        });
+      }
+
+      function startInlineEditAttendance(cell, studentId) {
+        const student = data.students.find(s => s.id === studentId);
+        if (!student) return;
+
+        const prevValue = cell.textContent;
+        cell.innerHTML = '';
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = 0;
+        input.max = 100;
+        input.step = 0.1;
+        input.value = student.attendancePercent.toFixed(1);
+        input.style.width = '70px';
+        input.setAttribute('aria-label', `Edit attendance percentage for ${student.name}`);
+        cell.appendChild(input);
+        input.focus();
+
+        input.addEventListener('blur', () => {
+          let val = parseFloat(input.value);
+          if (isNaN(val) || val < 0) val = 0;
+          else if (val > 100) val = 100;
+          student.attendancePercent = val;
+          saveData();
+          renderAttendanceTable();
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            student.attendancePercent = parseFloat(prevValue);
+            renderAttendanceTable();
+          }
+        });
+      }
+
+      // Results Table
+      function renderResultsTable() {
+        clearTable(resultsTableBody);
+        if (data.students.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 4;
+          td.textContent = 'No students added yet.';
+          td.style.fontStyle = 'italic';
+          td.className = 'text-muted';
+          tr.appendChild(td);
+          resultsTableBody.appendChild(tr);
+          return;
+        }
+        data.students.forEach(s => {
+          const tr = document.createElement('tr');
+
+          const tdRoll = document.createElement('td');
+          tdRoll.textContent = s.roll;
+          tr.appendChild(tdRoll);
+
+          const tdName = document.createElement('td');
+          tdName.textContent = s.name;
+          tr.appendChild(tdName);
+
+          const tdResult = document.createElement('td');
+          tdResult.textContent = s.result;
+          tdResult.title = 'Click to edit result';
+          tdResult.style.cursor = 'pointer';
+          tdResult.setAttribute('tabindex', '0');
+          tdResult.setAttribute('role', 'textbox');
+          tdResult.setAttribute('aria-label', `Exam result for ${s.name}`);
+
+          tdResult.addEventListener('click', () => {
+            startInlineEditResult(tdResult, s.id);
+          });
+          tdResult.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              startInlineEditResult(tdResult, s.id);
+            }
+          });
+
+          tr.appendChild(tdResult);
+
+          const tdActions = document.createElement('td');
+          const btnReset = document.createElement('button');
+          btnReset.className = 'small-button';
+          btnReset.textContent = 'Reset';
+          btnReset.setAttribute('aria-label', `Reset result for ${s.name}`);
+          btnReset.addEventListener('click', () => {
+            s.result = 'N/A';
+            saveData();
+            renderResultsTable();
+          });
+          tdActions.appendChild(btnReset);
+          tr.appendChild(tdActions);
+
+          resultsTableBody.appendChild(tr);
+        });
+      }
+
+      function startInlineEditResult(cell, studentId) {
+        const student = data.students.find(s => s.id === studentId);
+        if (!student) return;
+
+        const prevValue = cell.textContent;
+        cell.innerHTML = '';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = student.result;
+        input.style.width = '100px';
+        input.setAttribute('aria-label', `Edit exam result for ${student.name}`);
+        input.maxLength = 5;
+        cell.appendChild(input);
+        input.focus();
+
+        input.addEventListener('blur', () => {
+          let val = input.value.trim().toUpperCase();
+          if (!val) val = 'N/A';
+          student.result = val;
+          saveData();
+          renderResultsTable();
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            student.result = prevValue;
+            renderResultsTable();
+          }
+        });
+      }
+
+      // Fees Table
+      function renderFeesTable() {
+        clearTable(feesTableBody);
+        if (data.students.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 6;
+          td.textContent = 'No students added yet.';
+          td.style.fontStyle = 'italic';
+          td.className = 'text-muted';
+          tr.appendChild(td);
+          feesTableBody.appendChild(tr);
+          return;
+        }
+        data.students.forEach(s => {
+          const tr = document.createElement('tr');
+
+          const tdRoll = document.createElement('td');
+          tdRoll.textContent = s.roll;
+          tr.appendChild(tdRoll);
+
+          const tdName = document.createElement('td');
+          tdName.textContent = s.name;
+          tr.appendChild(tdName);
+
+          const tdFeePaid = document.createElement('td');
+          tdFeePaid.textContent = s.feePaid.toFixed(2);
+          tdFeePaid.title = 'Click to edit fee paid';
+          tdFeePaid.style.cursor = 'pointer';
+          tdFeePaid.setAttribute('tabindex', '0');
+          tdFeePaid.setAttribute('role', 'textbox');
+          tdFeePaid.setAttribute('aria-label', `Fee paid by ${s.name}`);
+
+          tdFeePaid.addEventListener('click', () => {
+            startInlineEditFee(tdFeePaid, s.id, 'feePaid');
+          });
+          tdFeePaid.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              startInlineEditFee(tdFeePaid, s.id, 'feePaid');
+            }
+          });
+
+          const tdTotalFee = document.createElement('td');
+          tdTotalFee.textContent = s.totalFee.toFixed(2);
+          tr.appendChild(tdTotalFee);
+
+          const tdBalance = document.createElement('td');
+          const balance = s.totalFee - s.feePaid;
+          tdBalance.textContent = balance.toFixed(2);
+          tr.appendChild(tdBalance);
+
+          const tdActions = document.createElement('td');
+          const btnReset = document.createElement('button');
+          btnReset.className = 'small-button';
+          btnReset.textContent = 'Reset';
+          btnReset.setAttribute('aria-label', `Reset fee payments for ${s.name}`);
+          btnReset.addEventListener('click', () => {
+            s.feePaid = 0;
+            saveData();
+            renderFeesTable();
+          });
+          tdActions.appendChild(btnReset);
+          tr.appendChild(tdActions);
+
+          tr.appendChild(tdFeePaid);
+          // Rebuild: We need to append tdFeePaid before tdTotalFee and tdBalance?
+          // Adjust table row order: Roll - Name - Fee Paid - Total Fee - Balance - Actions
+          // Already added in correct order except tdFeePaid is last appended - fix order below:
+
+          tr.removeChild(tdFeePaid);
+          tr.insertBefore(tdFeePaid, tdTotalFee);
+
+          feesTableBody.appendChild(tr);
+        });
+      }
+
+      function startInlineEditFee(cell, studentId, key) {
+        const student = data.students.find(s => s.id === studentId);
+        if (!student) return;
+
+        const prevValue = student[key];
+
+        cell.innerHTML = '';
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = 0;
+        input.max = student.totalFee;
+        input.step = 0.01;
+        input.value = prevValue.toFixed(2);
+        input.style.width = '100px';
+        input.setAttribute('aria-label', `Edit fee paid by ${student.name}`);
+
+        cell.appendChild(input);
+        input.focus();
+
+        input.addEventListener('blur', () => {
+          let val = parseFloat(input.value);
+          if (isNaN(val) || val < 0) val = 0;
+          else if (val > student.totalFee) val = student.totalFee;
+          student[key] = val;
+          saveData();
+          renderFeesTable();
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            student[key] = prevValue;
+            renderFeesTable();
+          }
+        });
+      }
+
+      // Render all tables in all sections
+      function renderAllTables() {
+        renderStudentsTable();
+        renderAttendanceTable();
+        renderResultsTable();
+        renderFeesTable();
+      }
+
+      // Startup
+      function init() {
+        loadData();
+        renderAllTables();
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
+
